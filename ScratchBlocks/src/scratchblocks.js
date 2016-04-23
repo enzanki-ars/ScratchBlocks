@@ -48,20 +48,27 @@ var scratchblocks = function () {
     }
   }
 
+  function indent(text) {
+    return text.split("\n").map(function(line) {
+      return "  " + line;
+    }).join("\n");
+  }
+
   /*****************************************************************************/
 
   // List of classes we're allowed to override.
 
   var overrideCategories = ["motion", "looks", "sound", "pen", "variables", "list", "events", "control", "sensing", "operators", "custom", "custom-arg", "extension", "grey", "obsolete"];
-  var overrideShapes = ["hat", "cap", "stack", "embedded", "boolean", "reporter", "celse", "cend", "ring"];
+  var overrideShapes = ["hat", "cap", "stack", "boolean", "reporter", "ring"];
 
   // languages that should be displayed right to left
   var rtlLanguages = ['ar', 'fa', 'he'];
 
   // List of commands taken from Scratch
-  var scratchCommands = [ ["move %n steps", " ", 1, "forward:"], ["turn @turnRight %n degrees", " ", 1, "turnRight:"], ["turn @turnLeft %n degrees", " ", 1, "turnLeft:"], ["point in direction %d.direction", " ", 1, "heading:"], ["point towards %m.spriteOrMouse", " ", 1, "pointTowards:"], ["go to x:%n y:%n", " ", 1, "gotoX:y:"], ["go to %m.location", " ", 1, "gotoSpriteOrMouse:"], ["glide %n secs to x:%n y:%n", " ", 1, "glideSecs:toX:y:elapsed:from:"], ["change x by %n", " ", 1, "changeXposBy:"], ["set x to %n", " ", 1, "xpos:"], ["change y by %n", " ", 1, "changeYposBy:"], ["set y to %n", " ", 1, "ypos:"], ["set rotation style %m.rotationStyle", " ", 1, "setRotationStyle"], ["say %s for %n secs", " ", 2, "say:duration:elapsed:from:"], ["say %s", " ", 2, "say:"], ["think %s for %n secs", " ", 2, "think:duration:elapsed:from:"], ["think %s", " ", 2, "think:"], ["show", " ", 2, "show"], ["hide", " ", 2, "hide"], ["switch costume to %m.costume", " ", 2, "lookLike:"], ["next costume", " ", 2, "nextCostume"], ["next backdrop", " ", 102, "nextScene"], ["switch backdrop to %m.backdrop", " ", 2, "startScene"], ["switch backdrop to %m.backdrop and wait", " ", 102, "startSceneAndWait"], ["change %m.effect effect by %n", " ", 2, "changeGraphicEffect:by:"], ["set %m.effect effect to %n", " ", 2, "setGraphicEffect:to:"], ["clear graphic effects", " ", 2, "filterReset"], ["change size by %n", " ", 2, "changeSizeBy:"], ["set size to %n%", " ", 2, "setSizeTo:"], ["go to front", " ", 2, "comeToFront"], ["go back %n layers", " ", 2, "goBackByLayers:"], ["play sound %m.sound", " ", 3, "playSound:"], ["play sound %m.sound until done", " ", 3, "doPlaySoundAndWait"], ["stop all sounds", " ", 3, "stopAllSounds"], ["play drum %d.drum for %n beats", " ", 3, "playDrum"], ["rest for %n beats", " ", 3, "rest:elapsed:from:"], ["play note %d.note for %n beats", " ", 3, "noteOn:duration:elapsed:from:"], ["set instrument to %d.instrument", " ", 3, "instrument:"], ["change volume by %n", " ", 3, "changeVolumeBy:"], ["set volume to %n%", " ", 3, "setVolumeTo:"], ["change tempo by %n", " ", 3, "changeTempoBy:"], ["set tempo to %n bpm", " ", 3, "setTempoTo:"], ["clear", " ", 4, "clearPenTrails"], ["stamp", " ", 4, "stampCostume"], ["pen down", " ", 4, "putPenDown"], ["pen up", " ", 4, "putPenUp"], ["set pen color to %c", " ", 4, "penColor:"], ["change pen color by %n", " ", 4, "changePenHueBy:"], ["set pen color to %n", " ", 4, "setPenHueTo:"], ["change pen shade by %n", " ", 4, "changePenShadeBy:"], ["set pen shade to %n", " ", 4, "setPenShadeTo:"], ["change pen size by %n", " ", 4, "changePenSizeBy:"], ["set pen size to %n", " ", 4, "penSize:"], ["when @greenFlag clicked", "h", 5, "whenGreenFlag"], ["when %m.key key pressed", "h", 5, "whenKeyPressed"], ["when this sprite clicked", "h", 5, "whenClicked"], ["when backdrop switches to %m.backdrop", "h", 5, "whenSceneStarts"], ["when %m.triggerSensor > %n", "h", 5, "whenSensorGreaterThan"], ["when I receive %m.broadcast", "h", 5, "whenIReceive"], ["broadcast %m.broadcast", " ", 5, "broadcast:"], ["broadcast %m.broadcast and wait", " ", 5, "doBroadcastAndWait"], ["wait %n secs", " ", 6, "wait:elapsed:from:"], ["repeat %n", "c", 6, "doRepeat"], ["forever", "cf",6, "doForever"], ["if %b then", "c", 6, "doIf"], ["if %b then", "e", 6, "doIfElse"], ["wait until %b", " ", 6, "doWaitUntil"], ["repeat until %b", "c", 6, "doUntil"], ["stop %m.stop", "f", 6, "stopScripts"], ["when I start as a clone", "h", 6, "whenCloned"], ["create clone of %m.spriteOnly", " ", 6, "createCloneOf"], ["delete this clone", "f", 6, "deleteClone"], ["ask %s and wait", " ", 7, "doAsk"], ["turn video %m.videoState", " ", 7, "setVideoState"], ["set video transparency to %n%", " ", 7, "setVideoTransparency"], ["reset timer", " ", 7, "timerReset"], ["set %m.var to %s", " ", 9, "setVar:to:"], ["change %m.var by %n", " ", 9, "changeVar:by:"], ["show variable %m.var", " ", 9, "showVariable:"], ["hide variable %m.var", " ", 9, "hideVariable:"], ["add %s to %m.list", " ", 12, "append:toList:"], ["delete %d.listDeleteItem of %m.list", " ", 12, "deleteLine:ofList:"], ["if on edge, bounce", " ", 1, "bounceOffEdge"], ["insert %s at %d.listItem of %m.list", " ", 12, "insert:at:ofList:"], ["replace item %d.listItem of %m.list with %s", " ", 12, "setLine:ofList:to:"], ["show list %m.list", " ", 12, "showList:"], ["hide list %m.list", " ", 12, "hideList:"], ["x position", "r", 1, "xpos"], ["y position", "r", 1, "ypos"], ["direction", "r", 1, "heading"], ["costume #", "r", 2, "costumeIndex"], ["size", "r", 2, "scale"], ["backdrop name", "r", 102, "sceneName"], ["backdrop #", "r", 102, "backgroundIndex"], ["volume", "r", 3, "volume"], ["tempo", "r", 3, "tempo"], ["touching %m.touching?", "b", 7, "touching:"], ["touching color %c?", "b", 7, "touchingColor:"], ["color %c is touching %c?", "b", 7, "color:sees:"], ["distance to %m.spriteOrMouse", "r", 7, "distanceTo:"], ["answer", "r", 7, "answer"], ["key %m.key pressed?", "b", 7, "keyPressed:"], ["mouse down?", "b", 7, "mousePressed"], ["mouse x", "r", 7, "mouseX"], ["mouse y", "r", 7, "mouseY"], ["loudness", "r", 7, "soundLevel"], ["video %m.videoMotionType on %m.stageOrThis", "r", 7, "senseVideoMotion"], ["timer", "r", 7, "timer"], ["%m.attribute of %m.spriteOrStage", "r", 7, "getAttribute:of:"], ["current %m.timeAndDate", "r", 7, "timeAndDate"], ["days since 2000", "r", 7, "timestamp"], ["username", "r", 7, "getUserName"], ["%n + %n", "r", 8, "+"], ["%n - %n", "r", 8, "-"], ["%n * %n", "r", 8, "*"], ["%n / %n", "r", 8, "/"], ["pick random %n to %n", "r", 8, "randomFrom:to:"], ["%s < %s", "b", 8, "<"], ["%s = %s", "b", 8, "="], ["%s > %s", "b", 8, ">"], ["%b and %b", "b", 8, "&"], ["%b or %b", "b", 8, "|"], ["not %b", "b", 8, "not"], ["join %s %s", "r", 8, "concatenate:with:"], ["letter %n of %s", "r", 8, "letter:of:"], ["length of %s", "r", 8, "stringLength:"], ["%n mod %n", "r", 8, "%"], ["round %n", "r", 8, "rounded"], ["%m.mathOp of %n", "r", 8, "computeFunction:of:"], ["item %d.listItem of %m.list", "r", 12, "getLine:ofList:"], ["length of %m.list", "r", 12, "lineCountOfList:"], ["%m.list contains %s?", "b", 12, "list:contains:"], ["when %m.booleanSensor", "h", 20, ""], ["when %m.sensor %m.lessMore %n", "h", 20, ""], ["sensor %m.booleanSensor?", "b", 20, ""], ["%m.sensor sensor value", "r", 20, ""], ["turn %m.motor on for %n secs", " ", 20, ""], ["turn %m.motor on", " ", 20, ""], ["turn %m.motor off", " ", 20, ""], ["set %m.motor power to %n", " ", 20, ""], ["set %m.motor2 direction to %m.motorDirection", " ", 20, ""], ["when distance %m.lessMore %n", "h", 20, ""], ["when tilt %m.eNe %n", "h", 20, ""], ["distance", "r", 20, ""], ["tilt", "r", 20, ""], ["turn %m.motor on for %n seconds", " ", 20, ""], ["set light color to %n", " ", 20, ""], ["play note %n for %n seconds", " ", 20, ""], ["when tilted", "h", 20, ""], ["tilt %m.xxx", "r", 20, ""], ["else", "else", 6, ""], ["end", "end", 6, ""], [". . .", " ", 42, ""], ["%n @addInput", "ring", 42, ""], ];
+  var scratchCommands = [ ["move %n steps", " ", 1, "forward:"], ["turn @turnRight %n degrees", " ", 1, "turnRight:"], ["turn @turnLeft %n degrees", " ", 1, "turnLeft:"], ["point in direction %d.direction", " ", 1, "heading:"], ["point towards %m.spriteOrMouse", " ", 1, "pointTowards:"], ["go to x:%n y:%n", " ", 1, "gotoX:y:"], ["go to %m.location", " ", 1, "gotoSpriteOrMouse:"], ["glide %n secs to x:%n y:%n", " ", 1, "glideSecs:toX:y:elapsed:from:"], ["change x by %n", " ", 1, "changeXposBy:"], ["set x to %n", " ", 1, "xpos:"], ["change y by %n", " ", 1, "changeYposBy:"], ["set y to %n", " ", 1, "ypos:"], ["set rotation style %m.rotationStyle", " ", 1, "setRotationStyle"], ["say %s for %n secs", " ", 2, "say:duration:elapsed:from:"], ["say %s", " ", 2, "say:"], ["think %s for %n secs", " ", 2, "think:duration:elapsed:from:"], ["think %s", " ", 2, "think:"], ["show", " ", 2, "show"], ["hide", " ", 2, "hide"], ["switch costume to %m.costume", " ", 2, "lookLike:"], ["next costume", " ", 2, "nextCostume"], ["next backdrop", " ", 102, "nextScene"], ["switch backdrop to %m.backdrop", " ", 2, "startScene"], ["switch backdrop to %m.backdrop and wait", " ", 102, "startSceneAndWait"], ["change %m.effect effect by %n", " ", 2, "changeGraphicEffect:by:"], ["set %m.effect effect to %n", " ", 2, "setGraphicEffect:to:"], ["clear graphic effects", " ", 2, "filterReset"], ["change size by %n", " ", 2, "changeSizeBy:"], ["set size to %n%", " ", 2, "setSizeTo:"], ["go to front", " ", 2, "comeToFront"], ["go back %n layers", " ", 2, "goBackByLayers:"], ["play sound %m.sound", " ", 3, "playSound:"], ["play sound %m.sound until done", " ", 3, "doPlaySoundAndWait"], ["stop all sounds", " ", 3, "stopAllSounds"], ["play drum %d.drum for %n beats", " ", 3, "playDrum"], ["rest for %n beats", " ", 3, "rest:elapsed:from:"], ["play note %d.note for %n beats", " ", 3, "noteOn:duration:elapsed:from:"], ["set instrument to %d.instrument", " ", 3, "instrument:"], ["change volume by %n", " ", 3, "changeVolumeBy:"], ["set volume to %n%", " ", 3, "setVolumeTo:"], ["change tempo by %n", " ", 3, "changeTempoBy:"], ["set tempo to %n bpm", " ", 3, "setTempoTo:"], ["clear", " ", 4, "clearPenTrails"], ["stamp", " ", 4, "stampCostume"], ["pen down", " ", 4, "putPenDown"], ["pen up", " ", 4, "putPenUp"], ["set pen color to %c", " ", 4, "penColor:"], ["change pen color by %n", " ", 4, "changePenHueBy:"], ["set pen color to %n", " ", 4, "setPenHueTo:"], ["change pen shade by %n", " ", 4, "changePenShadeBy:"], ["set pen shade to %n", " ", 4, "setPenShadeTo:"], ["change pen size by %n", " ", 4, "changePenSizeBy:"], ["set pen size to %n", " ", 4, "penSize:"], ["when @greenFlag clicked", "h", 5, "whenGreenFlag"], ["when %m.key key pressed", "h", 5, "whenKeyPressed"], ["when this sprite clicked", "h", 5, "whenClicked"], ["when backdrop switches to %m.backdrop", "h", 5, "whenSceneStarts"], ["when %m.triggerSensor > %n", "h", 5, "whenSensorGreaterThan"], ["when I receive %m.broadcast", "h", 5, "whenIReceive"], ["broadcast %m.broadcast", " ", 5, "broadcast:"], ["broadcast %m.broadcast and wait", " ", 5, "doBroadcastAndWait"], ["wait %n secs", " ", 6, "wait:elapsed:from:"], ["repeat %n", "c", 6, "doRepeat"], ["forever", "cf",6, "doForever"], ["if %b then", "c", 6, "doIf"], ["if %b then", "e", 6, "doIfElse"], ["wait until %b", " ", 6, "doWaitUntil"], ["repeat until %b", "c", 6, "doUntil"], ["stop %m.stop", "f", 6, "stopScripts"], ["when I start as a clone", "h", 6, "whenCloned"], ["create clone of %m.spriteOnly", " ", 6, "createCloneOf"], ["delete this clone", "f", 6, "deleteClone"], ["ask %s and wait", " ", 7, "doAsk"], ["turn video %m.videoState", " ", 7, "setVideoState"], ["set video transparency to %n%", " ", 7, "setVideoTransparency"], ["reset timer", " ", 7, "timerReset"], ["set %m.var to %s", " ", 9, "setVar:to:"], ["change %m.var by %n", " ", 9, "changeVar:by:"], ["show variable %m.var", " ", 9, "showVariable:"], ["hide variable %m.var", " ", 9, "hideVariable:"], ["add %s to %m.list", " ", 12, "append:toList:"], ["delete %d.listDeleteItem of %m.list", " ", 12, "deleteLine:ofList:"], ["if on edge, bounce", " ", 1, "bounceOffEdge"], ["insert %s at %d.listItem of %m.list", " ", 12, "insert:at:ofList:"], ["replace item %d.listItem of %m.list with %s", " ", 12, "setLine:ofList:to:"], ["show list %m.list", " ", 12, "showList:"], ["hide list %m.list", " ", 12, "hideList:"], ["x position", "r", 1, "xpos"], ["y position", "r", 1, "ypos"], ["direction", "r", 1, "heading"], ["costume #", "r", 2, "costumeIndex"], ["size", "r", 2, "scale"], ["backdrop name", "r", 102, "sceneName"], ["backdrop #", "r", 102, "backgroundIndex"], ["volume", "r", 3, "volume"], ["tempo", "r", 3, "tempo"], ["touching %m.touching?", "b", 7, "touching:"], ["touching color %c?", "b", 7, "touchingColor:"], ["color %c is touching %c?", "b", 7, "color:sees:"], ["distance to %m.spriteOrMouse", "r", 7, "distanceTo:"], ["answer", "r", 7, "answer"], ["key %m.key pressed?", "b", 7, "keyPressed:"], ["mouse down?", "b", 7, "mousePressed"], ["mouse x", "r", 7, "mouseX"], ["mouse y", "r", 7, "mouseY"], ["loudness", "r", 7, "soundLevel"], ["video %m.videoMotionType on %m.stageOrThis", "r", 7, "senseVideoMotion"], ["timer", "r", 7, "timer"], ["%m.attribute of %m.spriteOrStage", "r", 7, "getAttribute:of:"], ["current %m.timeAndDate", "r", 7, "timeAndDate"], ["days since 2000", "r", 7, "timestamp"], ["username", "r", 7, "getUserName"], ["%n + %n", "r", 8, "+"], ["%n - %n", "r", 8, "-"], ["%n * %n", "r", 8, "*"], ["%n / %n", "r", 8, "/"], ["pick random %n to %n", "r", 8, "randomFrom:to:"], ["%s < %s", "b", 8, "<"], ["%s = %s", "b", 8, "="], ["%s > %s", "b", 8, ">"], ["%b and %b", "b", 8, "&"], ["%b or %b", "b", 8, "|"], ["not %b", "b", 8, "not"], ["join %s %s", "r", 8, "concatenate:with:"], ["letter %n of %s", "r", 8, "letter:of:"], ["length of %s", "r", 8, "stringLength:"], ["%n mod %n", "r", 8, "%"], ["round %n", "r", 8, "rounded"], ["%m.mathOp of %n", "r", 8, "computeFunction:of:"], ["item %d.listItem of %m.list", "r", 12, "getLine:ofList:"], ["length of %m.list", "r", 12, "lineCountOfList:"], ["%m.list contains %s?", "b", 12, "list:contains:"], ["when %m.booleanSensor", "h", 20, ""], ["when %m.sensor %m.lessMore %n", "h", 20, ""], ["sensor %m.booleanSensor?", "b", 20, ""], ["%m.sensor sensor value", "r", 20, ""], ["turn %m.motor on for %n secs", " ", 20, ""], ["turn %m.motor on", " ", 20, ""], ["turn %m.motor off", " ", 20, ""], ["set %m.motor power to %n", " ", 20, ""], ["set %m.motor2 direction to %m.motorDirection", " ", 20, ""], ["when distance %m.lessMore %n", "h", 20, ""], ["when tilt %m.eNe %n", "h", 20, ""], ["distance", "r", 20, ""], ["tilt", "r", 20, ""], ["turn %m.motor on for %n seconds", " ", 20, ""], ["set light color to %n", " ", 20, ""], ["play note %n for %n seconds", " ", 20, ""], ["when tilted", "h", 20, ""], ["tilt %m.xxx", "r", 20, ""], ["else", "else", 6, ""], ["end", "end", 6, ""], [". . .", " ", 42, ""], ["%n @addInput", "ring", 42, ""], ["if %b", "c", 0, "doIf"], ["if %b", "e", 0, "doIfElse"], ["forever if %b", "cf", 0, "doForeverIf"], ["stop script", "f", 0, "doReturn"], ["stop all", "f", 0, "stopAll"], ["switch to costume %m.costume", " ", 0, "lookLike:"], ["next background", " ", 0, "nextScene"], ["switch to background %m.backdrop", " ", 0, "startScene"], ["background #", "r", 0, "backgroundIndex"], ["loud?", "b", 0, "isLoud"], ];
 
   var categoriesById = {
+    0:  "obsolete",
     1:  "motion",
     2:  "looks",
     3:  "sound",
@@ -135,16 +142,19 @@ var scratchblocks = function () {
       hasLoopArrow: ['doRepeat', 'doUntil', 'doForever'].indexOf(command[3]) > -1,
     });
     if (info.selector) {
-      assert(!blocksBySelector[info.selector], info.selector);
-      blocksBySelector[info.selector] = info;
+      // nb. command order matters!
+      // Scratch 1.4 blocks are listed last
+      if(!blocksBySelector[info.selector]) blocksBySelector[info.selector] = info;
     }
     return blocksBySpec[info.spec] = info;
   });
 
-  var imageIcons = {
+  var unicodeIcons = {
     "@greenFlag": "⚑",
     "@turnRight": "↻",
     "@turnLeft": "↺",
+    "@addInput": "▸",
+    "@delInput": "◂",
   };
 
   var allLanguages = {};
@@ -162,7 +172,7 @@ var scratchblocks = function () {
       var m = iconPat.exec(spec);
       if (m) {
         var image = m[0];
-        var hash = nativeHash.replace(image, imageIcons[image]);
+        var hash = nativeHash.replace(image, unicodeIcons[image]);
         blocksByHash[hash] = block;
       }
     });
@@ -175,6 +185,7 @@ var scratchblocks = function () {
       blocksByHash[aliasHash] = block;
     });
 
+    language.code = code;
     allLanguages[code] = language;
   }
   function loadLanguages(languages) {
@@ -265,8 +276,6 @@ var scratchblocks = function () {
         info.categoryIsDefault = false;
       } else if (overrideShapes.indexOf(name) > -1) {
         info.shape = name;
-      } else if (name === 'cstart') {
-        info.shape = 'c-block';
       } else if (name === 'loop') {
         info.hasLoopArrow = true;
       }
@@ -297,31 +306,22 @@ var scratchblocks = function () {
     for (var i=0; i<languages.length; i++) {
       var lang = languages[i];
       if (lang.blocksByHash.hasOwnProperty(hash)) {
-        var block = lang.blocksByHash[hash];
-        if (block.specialCase) {
-          block = block.specialCase(info, children, lang) || block;
+        var type = lang.blocksByHash[hash];
+        if (type.specialCase) {
+          type = type.specialCase(info, children, lang) || type;
         }
-        info.language = lang;
-        if (block.shape === 'ring' ? info.shape === 'reporter' : info.shape === 'stack') {
-          info.shape = block.shape;
-        }
-        info.category = block.category;
-        info.categoryIsDefault = false;
-        info.selector = block.selector; // for backpack
-        info.hasLoopArrow = block.hasLoopArrow;
 
-        // image replacement
-        if (iconPat.test(block.spec) || lang.aliases[hash]) {
-          var inputs = children.filter(function(child) {
-            return !child.isLabel;
-          });
-          children = block.parts.map(function(part) {
-            part = part.trim();
-            if (!part) return;
-            return inputPat.test(part) ? inputs.shift()
-                 : iconPat.test(part) ? new Icon(part.slice(1)) : new Label(part);
-          }).filter(bool);
+        info.language = lang;
+        info.isRTL = rtlLanguages.indexOf(lang.code) > -1;
+
+        if (type.shape === 'ring' ? info.shape === 'reporter' : info.shape === 'stack') {
+          info.shape = type.shape;
         }
+        info.category = type.category;
+        info.categoryIsDefault = false;
+        info.selector = type.selector; // for backpack
+        info.hasLoopArrow = type.hasLoopArrow;
+        break;
       }
     }
 
@@ -332,7 +332,13 @@ var scratchblocks = function () {
       children.push(new Icon('loopArrow'));
     }
 
-    return new Block(info, children);
+    var block = new Block(info, children);
+
+    // image replacement
+    if (type && (iconPat.test(type.spec) || lang.aliases[hash])) {
+      block.translate(lang, true);
+    }
+    return block;
   }
 
 
@@ -373,10 +379,8 @@ var scratchblocks = function () {
       };
       return paintBlock(info, children, languages);
     }
-    // TODO readVariable selector
 
     function pParts(end) {
-      // TODO ignoreLt
       var children = [];
       var label;
       while (tok && tok !== '\n') {
@@ -823,12 +827,18 @@ var scratchblocks = function () {
           block.info.names = info.names;
           block.info.category = 'custom';
 
+        // fix up if/else selectors
+        } else if (block.info.selector === 'doIfElse') {
+          var last2 = block.children[block.children.length - 2];
+          block.info.selector = last2 && last2.isLabel && last2.value === 'else' ? 'doIfElse' : 'doIf';
+
         // custom arguments
-        } else if (block.info.categoryIsDefault && block.info.category === 'variables') {
+        } else if (block.info.categoryIsDefault && (block.isReporter || block.isBoolean)) {
           var name = blockName(block);
           if (customArgs[name]) {
             block.info.category = 'custom-arg';
             block.info.categoryIsDefault = false;
+            block.info.selector = 'getParam';
           }
 
         // list names
@@ -838,7 +848,7 @@ var scratchblocks = function () {
             return !child.isLabel;
           });
           var input = inputs[argIndex];
-          if (input.isInput) {
+          if (input && input.isInput) {
             listNames[input.value] = true;
           }
         }
@@ -847,10 +857,8 @@ var scratchblocks = function () {
 
     scripts.forEach(function(script) {
       eachBlock(script, function(block) {
-        if (!block.info.categoryIsDefault) return;
-
         // custom blocks
-        if (block.info.category === 'obsolete') {
+        if (block.info.categoryIsDefault && block.info.category === 'obsolete') {
           var info = customBlocksByHash[block.info.hash];
           if (info) {
             block.info.selector = 'call';
@@ -860,11 +868,17 @@ var scratchblocks = function () {
           }
 
         // list reporters
-        } else if (block.info.category === 'variables') {
+        } else if (block.isReporter) {
           var name = blockName(block);
-          if (name && listNames[name]) {
+          if (!name) return;
+          if (block.info.category === 'variables' && listNames[name] && block.info.categoryIsDefault) {
             block.info.category = 'list';
             block.info.categoryIsDefault = false;
+          }
+          if (block.info.category === 'list') {
+            block.info.selector = 'contentsOfList:';
+          } else if (block.info.category === 'variables') {
+            block.info.selector = 'readVariable';
           }
         }
       });
@@ -890,7 +904,7 @@ var scratchblocks = function () {
     var f = parseLines(code, languages);
     var scripts = parseScripts(f);
     recogniseStuff(scripts);
-    return scripts;
+    return new Document(scripts);
   }
 
   /*****************************************************************************/
@@ -971,7 +985,7 @@ var scratchblocks = function () {
     });
   }
 
-  function translate(dx, dy, el) {
+  function move(dx, dy, el) {
     setProps(el, {
       transform: ['translate(', dx, ' ', dy, ')'].join(''),
     });
@@ -1215,7 +1229,7 @@ var scratchblocks = function () {
 
     var archRoundness = Math.min(0.2, 35 / w);
 
-    return translate(0, y, group([
+    return move(0, y, group([
         procHatBase(w, q, archRoundness, props),
         procHatCap(w, q, archRoundness),
     ]));
@@ -1278,7 +1292,7 @@ var scratchblocks = function () {
   }
 
   function commentLine(width, props) {
-    return translate(-width, 9, rect(width, 2, extend(props, {
+    return move(-width, 9, rect(width, 2, extend(props, {
       class: 'comment-line',
     })));
   }
@@ -1326,7 +1340,7 @@ var scratchblocks = function () {
           fill: '#000',
           opacity: '0.3',
         }),
-        translate(-1, -1, el('path', {
+        move(-1, -1, el('path', {
           d: "M8 0l2 -2l0 -3l3 0l-4 -5l-4 5l3 0l0 3l-8 0l0 2",
           fill: '#fff',
           opacity: '0.9',
@@ -1455,6 +1469,10 @@ var scratchblocks = function () {
   };
   Label.prototype.isLabel = true;
 
+  Label.prototype.stringify = function() {
+    return this.value;
+  };
+
   Label.prototype.measure = function() {
     // TODO measure multiple spaces
     this.el = text(0, 10, this.value, {
@@ -1527,6 +1545,11 @@ var scratchblocks = function () {
     extend(info, this);
   };
   Icon.prototype.isIcon = true;
+
+  Icon.prototype.stringify = function() {
+    return unicodeIcons["@" + this.name] || "";
+  };
+
   Icon.icons = {
     greenFlag: { width: 20, height: 21, dy: -2 },
     turnLeft: { width: 15, height: 12, dy: +1 },
@@ -1556,12 +1579,92 @@ var scratchblocks = function () {
     this.isColor = shape === 'color';
     this.hasArrow = shape === 'dropdown' || shape === 'number-dropdown';
     this.isDarker = shape === 'boolean' || shape === 'stack' || shape === 'dropdown';
+    this.isSquare = shape === 'string' || shape === 'color' || shape === 'dropdown';
 
     this.hasLabel = !(this.isColor || this.isInset);
     this.label = this.hasLabel ? new Label(value, ['literal-' + this.shape]) : null;
     this.x = 0;
   };
   Input.prototype.isInput = true;
+
+  Input.fromJSON = function(lang, value, part) {
+    var shape = {
+      b: 'boolean',
+      n: 'number',
+      s: 'string',
+      d: 'number-dropdown',
+      m: 'dropdown',
+      c: 'color',
+    }[part[1]];
+    if (shape === 'color') {
+      if (value < 0) value = 0xFFFFFFFF + value + 1;
+      var hex = value.toString(16);
+      hex = hex.slice(Math.max(0, hex.length - 6)); // last 6 characters
+      while (hex.length < 6) hex = '0' + hex;
+      if (hex[0] === hex[1] && hex[2] === hex[3] && hex[4] === hex[5]) {
+        hex = hex[0] + hex[2] + hex[4];
+      }
+      var value = '#' + hex;
+    } else if (shape === 'dropdown') {
+      var value = {
+        _mouse_: "mouse-pointer",
+        _myself_: "myself",
+        _stage_: "Stage",
+        _edge_: "edge",
+        _random_: "random position",
+      }[value] || value;
+    }
+    if (shape === 'dropdown' || shape === 'number-dropdown') {
+      // TODO translate
+    }
+    return new Input(shape, value || "");
+  };
+
+  Input.prototype.toJSON = function() {
+    if (this.isColor) {
+      assert(this.value[0] === '#');
+      var h = this.value.slice(1);
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return parseInt(h, 16);
+      // TODO signed int?
+    }
+    if (this.shape === 'dropdown' || this.shape === 'number-dropdown') {
+      // TODO translate
+    }
+    if (this.shape === 'dropdown') {
+      return {
+        "mouse-pointer": "_mouse_",
+        "myself": "_myself",
+        "Stage": "_stage_",
+        "edge": "_edge_",
+        "random position": "_random_",
+      }[this.value] || this.value;
+    }
+    return this.isBoolean ? false : this.value;
+  };
+
+  Input.prototype.stringify = function() {
+    if (this.isColor) {
+      assert(this.value[0] === '#');
+      return this.value;
+    }
+    var text = ((this.value ? "" + this.value : "")
+      .replace(/ v$/, " \\v")
+      .replace(/([\]\\])/g, "\\$1")
+    );
+    if (this.hasArrow) text += " v";
+    return this.isRound ? "(" + text + ")"
+         : this.isSquare ? "[" + text + "]"
+         : this.isBoolean ? "<>"
+         : this.isStacK ? "{}"
+         : text;
+  };
+
+  Input.prototype.translate = function() {
+    if (this.hasArrow) {
+      // TODO translate menu options
+    }
+  };
 
   Input.prototype.measure = function() {
     if (this.hasLabel) this.label.measure();
@@ -1612,11 +1715,11 @@ var scratchblocks = function () {
     ]);
     if (this.hasLabel) {
       var x = this.isRound ? 5 : 4;
-      result.appendChild(translate(x, 0, label));
+      result.appendChild(move(x, 0, label));
     }
     if (this.hasArrow) {
       var y = this.shape === 'dropdown' ? 5 : 4;
-      result.appendChild(translate(w - 10, y, polygon({
+      result.appendChild(move(w - 10, y, polygon({
         points: [
           7, 0,
           3.5, 4,
@@ -1633,6 +1736,7 @@ var scratchblocks = function () {
   /* Block */
 
   var Block = function(info, children, comment) {
+    assert(info);
     this.info = info;
     this.children = children;
     this.comment = comment || null;
@@ -1643,7 +1747,7 @@ var scratchblocks = function () {
     this.isFinal = /cap/.test(shape);
     this.isCommand = shape === 'stack' || shape === 'cap' || /block/.test(shape);
     this.isOutline = shape === 'outline';
-    this.isReporter = shape === 'reporter' || shape === 'embedded';
+    this.isReporter = shape === 'reporter';
     this.isBoolean = shape === 'boolean';
 
     this.isRing = shape === 'ring';
@@ -1652,8 +1756,168 @@ var scratchblocks = function () {
     this.isEnd = shape === 'cend';
 
     this.x = 0;
+    this.width = null;
+    this.height = null;
+    this.firstLine = null;
+    this.innerWidth = null;
   };
   Block.prototype.isBlock = true;
+
+  Block.fromJSON = function(lang, array, part) {
+    var args = array.slice();
+    var selector = args.shift();
+    if (selector === 'procDef') {
+      var spec = args[0];
+      var inputNames = args[1].slice();
+      // var defaultValues = args[2];
+      // var isAtomic = args[3]; // TODO
+
+      var info = parseSpec(spec);
+      var children = info.parts.map(function(part) {
+        if (inputPat.test(part)) {
+          var label = new Label(inputNames.shift());
+          return new Block({
+            shape: part[1] === 'b' ? 'boolean' : 'reporter',
+            category: 'custom-arg',
+          }, [label]);
+        } else {
+          return new Label(part);
+        }
+      });
+      var outline = new Block({
+        shape: 'outline',
+      }, children);
+
+      var children = [new Label(lang.define[0]), outline];
+      return new Block({
+        shape: 'define-hat',
+        category: 'custom',
+        selector: 'procDef',
+        call: spec,
+        names: args[1],
+      }, children);
+
+    } else if (selector === 'call') {
+      var spec = args.shift();
+      var info = extend(parseSpec(spec), {
+        category: 'custom',
+        shape: 'stack',
+        selector: 'call',
+        call: spec,
+      });
+      var parts = info.parts;
+
+    } else if (selector === 'readVariable' || selector === 'contentsOfList:' || selector === 'getParam') {
+      var shape = selector === 'getParam' && args.shift() === 'b' ? 'boolean' : 'reporter';
+      var info = {
+        selector: selector,
+        shape: shape,
+        category: {
+          'readVariable': 'variables',
+          'contentsOfList:': 'list',
+          'getParam': 'custom-arg',
+        }[selector],
+      }
+      return new Block(info, [new Label(args[0])]);
+
+    } else {
+      var info = blocksBySelector[selector];
+      assert(info, "unknown selector: " + selector);
+      var spec = lang.commands[info.spec];
+      var parts = parseSpec(spec).parts;
+    }
+    var children = parts.map(function(part) {
+      if (inputPat.test(part)) {
+        var arg = args.shift();
+        return (isArray(arg) ? Block : Input).fromJSON(lang, arg, part);
+      } else if (iconPat.test(part)) {
+        return new Icon(part.slice(1));
+      } else {
+        return new Label(part.trim());
+      }
+    });
+    args.forEach(function(list) {
+      assert(isArray(list));
+      children.push(new Script(list.map(Block.fromJSON.bind(null, lang))));
+    });
+    return new Block(info, children);
+  };
+
+  Block.prototype.toJSON = function() {
+    var selector = this.info.selector;
+    var args = [];
+
+    if (selector === 'procDef') {
+      var inputNames = this.info.names;
+      var spec = this.info.call;
+      var info = parseSpec(spec);
+      var defaultValues = info.inputs.map(function(input) {
+        return input === '%n' ? 1
+             : input === '%b' ? false : "";
+      });
+      var isAtomic = false; // TODO 'define-atomic' ??
+      return ['procDef', spec, inputNames, defaultValues, isAtomic];
+    }
+
+    if (selector === 'readVariable' || selector === 'contentsOfList:' || selector === 'getParam') {
+      if (selector === 'getParam') args.push(this.isBoolean === 'boolean' ? 'b' : 'r');
+      args.push(blockName(this));
+
+    } else {
+      for (var i=0; i<this.children.length; i++) {
+        var child = this.children[i];
+        if (child.isInput || child.isBlock || child.isScript) {
+          args.push(child.toJSON());
+        }
+      }
+
+      if (selector === 'call') {
+        return ['call', this.info.call].concat(args);
+      }
+    }
+    if (!selector) return "";
+    return [selector].concat(args);
+  };
+
+  Block.prototype.stringify = function() {
+    var text = this.children.map(function(child) {
+      return child.isScript ? "\n" + indent(child.stringify()) + "\n"
+                            : child.stringify().trim() + " ";
+    }).join("").trim();
+    if (this.info.shape === 'reporter' && this.info.category === 'list') text += " :: list";
+    if (this.info.category === 'custom' && this.info.shape !== 'define-hat') text += " :: custom";
+    return this.hasScript ? text + "\nend"
+         : this.info.shape === 'reporter' ? "(" + text + ")"
+         : this.info.shape === 'boolean' ? "<" + text + ">"
+         : text;
+  };
+
+  Block.prototype.translate = function(lang, isShallow) {
+    var selector = this.info.selector;
+    if (!selector) return;
+    var block = blocksBySelector[selector];
+    if (!block) return;
+    var nativeSpec = lang.commands[block.spec];
+    if (!nativeSpec) return;
+    var nativeInfo = parseSpec(nativeSpec);
+    var args = this.children.filter(function(child) {
+      return !child.isLabel && !child.isIcon;
+    });
+    if (!isShallow) args.forEach(function(child) {
+      child.translate(lang);
+    });
+    this.children = nativeInfo.parts.map(function(part) {
+      var part = part.trim();
+      if (!part) return;
+      return inputPat.test(part) ? args.shift()
+           : iconPat.test(part) ? new Icon(part.slice(1)) : new Label(part);
+    }).filter(bool);
+    args.forEach(function(arg) {
+      this.children.push(arg);
+    }.bind(this));
+    this.info.language = lang;
+    this.info.isRTL = rtlLanguages.indexOf(lang.code) > -1;
+  };
 
   Block.prototype.measure = function() {
     for (var i=0; i<this.children.length; i++) {
@@ -1672,7 +1936,6 @@ var scratchblocks = function () {
 
     'cap': capRect,
     'reporter': roundedRect,
-    'embedded': roundedRect,
     'boolean': pointedRect,
     'hat': hatRect,
     'define-hat': procHatRect,
@@ -1736,7 +1999,6 @@ var scratchblocks = function () {
     'hat':        [15, 6, 2],
     'define-hat': [21, 8, 9],
     'reporter':   [3, 4, 1],
-    'embedded':   [3, 4, 1],
     'boolean':    [3, 4, 2],
     'cap':        [6, 6, 2],
     'c-block':    [3, 6, 2],
@@ -1747,6 +2009,7 @@ var scratchblocks = function () {
 
   Block.prototype.draw = function() {
     var isDefine = this.info.shape === 'define-hat';
+    var children = this.children;
 
     var padding = Block.padding[this.info.shape] || Block.padding[null];
     var pt = padding[0],
@@ -1775,12 +2038,32 @@ var scratchblocks = function () {
       lines.push(line);
     }
 
+    if (this.info.isRTL) {
+      var start = 0;
+      var flip = function() {
+        children = (
+          children.slice(0, start).concat(
+          children.slice(start, i).reverse())
+          .concat(children.slice(i))
+        );
+      }.bind(this);
+      for (var i=0; i<children.length; i++) {
+        if (children[i].isScript) {
+          flip();
+          start = i + 1;
+        }
+      } if (start < i) {
+        flip();
+      }
+    }
+
     var lines = [];
-    for (var i=0; i<this.children.length; i++) {
-      var child = this.children[i];
+    for (var i=0; i<children.length; i++) {
+      var child = children[i];
       child.el = child.draw(this);
 
-      if (child.isScript && this.hasScript) {
+      if (child.isScript && this.isCommand) {
+        this.hasScript = true;
         pushLine();
         child.y = y;
         lines.push(child);
@@ -1817,13 +2100,15 @@ var scratchblocks = function () {
       this.height += p;
       pt += 2 * p;
     }
+    this.firstLine = lines[0];
+    this.innerWidth = innerWidth;
 
     var objects = [];
 
     for (var i=0; i<lines.length; i++) {
       var line = lines[i];
       if (line.isScript) {
-        objects.push(translate(15, line.y, line.el));
+        objects.push(move(15, line.y, line.el));
         continue;
       }
 
@@ -1832,7 +2117,7 @@ var scratchblocks = function () {
       for (var j=0; j<line.children.length; j++) {
         var child = line.children[j];
         if (child.isArrow) {
-          objects.push(translate(innerWidth - 15, this.height - 3, child.el));
+          objects.push(move(innerWidth - 15, this.height - 3, child.el));
           continue;
         }
 
@@ -1848,7 +2133,7 @@ var scratchblocks = function () {
             continue;
           }
         }
-        objects.push(translate(px + child.x, line.y + y|0, child.el));
+        objects.push(move(px + child.x, line.y + y|0, child.el));
       }
     }
 
@@ -1875,6 +2160,10 @@ var scratchblocks = function () {
   Comment.lineLength = 12;
   Comment.prototype.height = 20;
 
+  Comment.prototype.stringify = function() {
+    return "// " + this.label.value;
+  };
+
   Comment.prototype.measure = function() {
     this.label.measure();
   };
@@ -1888,7 +2177,7 @@ var scratchblocks = function () {
       commentRect(this.width, this.height, {
         class: 'comment',
       }),
-      translate(8, 4, labelEl),
+      move(8, 4, labelEl),
     ]);
   };
 
@@ -1903,6 +2192,32 @@ var scratchblocks = function () {
   };
   Script.prototype.isScript = true;
 
+  Script.fromJSON = function(lang, blocks) {
+    // x = array[0], y = array[1];
+    return new Script(blocks.map(Block.fromJSON.bind(null, lang)));
+  };
+
+  Script.prototype.toJSON = function() {
+    if (this.blocks[0] && this.blocks[0].isComment) return;
+    return this.blocks.map(function(block) {
+      return block.toJSON();
+    });
+  };
+
+  Script.prototype.stringify = function() {
+    return this.blocks.map(function(block) {
+      var line = block.stringify();
+      if (block.comment) line += " " + block.comment.stringify();
+      return line;
+    }).join("\n");
+  };
+
+  Script.prototype.translate = function(lang) {
+    this.blocks.forEach(function(block) {
+      block.translate(lang);
+    });
+  };
+
   Script.prototype.measure = function() {
     for (var i=0; i<this.blocks.length; i++) {
       this.blocks[i].measure();
@@ -1915,16 +2230,17 @@ var scratchblocks = function () {
     this.width = 0;
     for (var i=0; i<this.blocks.length; i++) {
       var block = this.blocks[i];
-      children.push(translate(inside ? 0 : 2, y, block.draw()));
+      children.push(move(inside ? 0 : 2, y, block.draw()));
       y += block.height;
       this.width = Math.max(this.width, block.width);
 
       var comment = block.comment;
       if (comment) {
-        var cx = block.width + 2 + Comment.lineLength;
-        var cy = y - (block.height / 2);
+        var line = block.firstLine;
+        var cx = block.innerWidth + 2 + Comment.lineLength;
+        var cy = y - block.height + (line.height / 2);
         var el = comment.draw();
-        children.push(translate(cx, cy - comment.height / 2, el));
+        children.push(move(cx, cy - comment.height / 2, el));
         this.width = Math.max(this.width, cx + comment.width);
       }
     }
@@ -1936,31 +2252,82 @@ var scratchblocks = function () {
   };
 
 
-  /*****************************************************************************/
+  /* Document */
 
-  function render(scripts, cb) {
-    // measure strings
-    Label.startMeasuring();
-    scripts.forEach(function(script) {
+  var Document = function(scripts) {
+    this.scripts = scripts;
+
+    this.width = null;
+    this.height = null;
+    this.el = null;
+  };
+
+  Document.fromJSON = function(scriptable, lang) {
+    var lang = lang || english;
+    var scripts = scriptable.scripts.map(function(array) {
+      var script = Script.fromJSON(lang, array[2]);
+      script.x = array[0];
+      script.y = array[1];
+      return script;
+    });
+    // TODO scriptable.scriptComments
+    return new Document(scripts);
+  };
+
+  Document.prototype.toJSON = function() {
+    var jsonScripts = this.scripts.map(function(script) {
+      var jsonBlocks = script.toJSON();
+      if (!jsonBlocks) return;
+      return [10, script.y + 10, jsonBlocks];
+    }).filter(bool);
+    return {
+      scripts: jsonScripts,
+      // scriptComments: [], // TODO
+    };
+  };
+
+  Document.prototype.stringify = function() {
+    return this.scripts.map(function(script) {
+      return script.stringify();
+    }).join("\n\n");
+  };
+
+  Document.prototype.translate = function(lang) {
+    this.scripts.forEach(function(script) {
+      script.translate(lang);
+    });
+  };
+
+  Document.prototype.measure = function() {
+    this.scripts.forEach(function(script) {
       script.measure();
     });
+  };
+
+  Document.prototype.render = function(cb) {
+    // measure strings
+    Label.startMeasuring();
+    this.measure();
 
     // finish measuring & render
-    Label.endMeasuring(drawScripts.bind(null, scripts, cb));
-  }
+    Label.endMeasuring(this.drawScripts.bind(this, cb));
+  };
 
-  function drawScripts(scripts, cb) {
+  Document.prototype.drawScripts = function(cb) {
     // render each script
     var width = 0;
     var height = 0;
     var elements = [];
-    for (var i=0; i<scripts.length; i++) {
-      var script = scripts[i];
+    for (var i=0; i<this.scripts.length; i++) {
+      var script = this.scripts[i];
       if (height) height += 10;
-      elements.push(translate(0, height, script.draw()));
+      script.y = height;
+      elements.push(move(0, height, script.draw()));
       height += script.height;
       width = Math.max(width, script.width + 4);
     }
+    this.width = width;
+    this.height = height;
 
     // return SVG
     var svg = newSVG(width, height);
@@ -1972,13 +2339,46 @@ var scratchblocks = function () {
     ].concat(makeIcons())));
 
     svg.appendChild(group(elements));
+    this.el = svg;
     cb(svg);
+  };
+
+  Document.prototype.exportSVG = function() {
+    assert(this.el, "call draw() first");
+    // TODO pad exported SVGs?
+    var xml = new XMLSerializer().serializeToString(this.el);
+    return 'data:image/svg+xml;utf8,' + xml.replace(
+      /[#]/g, encodeURIComponent
+    );
   }
 
-  function exportSVG(svg) {
-    // TODO pad exported SVGs?
-    return new XMLSerializer().serializeToString(svg);
+  Document.prototype.exportPNG = function(cb) {
+    var canvas = document.createElement('canvas');
+    canvas.width = this.width;
+    canvas.height = this.height;
+    var context = canvas.getContext("2d");
+
+    var image = new Image;
+    image.src = this.exportSVG();
+    image.onload = function() {
+      context.drawImage(image, 0, 0);
+
+      if (URL && URL.createObjectURL && Blob && canvas.toBlob) {
+        var blob = canvas.toBlob(function(blob) {
+          cb(URL.createObjectURL(blob));
+        }, 'image/png');
+      } else {
+        cb(canvas.toDataURL('image/png'));
+      }
+    };
   }
+
+  /*****************************************************************************/
+
+  function render(doc, cb) {
+    return doc.render(cb);
+  }
+
 
   /*** Render ***/
 
@@ -2000,27 +2400,23 @@ var scratchblocks = function () {
 
   // insert 'svg' into 'el', with appropriate wrapper elements
   function replace(el, svg, scripts, options) {
-	  try {
-		if (options.inline) {
-		  var container = document.createElement('span');
-		  var cls = "scratchblocks scratchblocks-inline";
-		  if (scripts[0] && !scripts[0].isEmpty) {
-			cls += " scratchblocks-inline-" + scripts[0].blocks[0].shape;
-		  }
-		  container.className = cls;
-		  container.style.display = 'inline-block';
-		  container.style.verticalAlign = 'middle';
-		} else {
-		  var container = document.createElement('div');
-		  container.className = "scratchblocks";
-		}
-		container.appendChild(svg);
+    if (options.inline) {
+      var container = document.createElement('span');
+      var cls = "scratchblocks scratchblocks-inline";
+      if (scripts[0] && !scripts[0].isEmpty) {
+        cls += " scratchblocks-inline-" + scripts[0].blocks[0].shape;
+      }
+      container.className = cls;
+      container.style.display = 'inline-block';
+      container.style.verticalAlign = 'middle';
+    } else {
+      var container = document.createElement('div');
+      container.className = "scratchblocks";
+    }
+    container.appendChild(svg);
 
-		el.innerHTML = '';
-		el.appendChild(container);
-	  } catch (err) {
-		  
-	  }
+    el.innerHTML = '';
+    el.appendChild(container);
   }
   
   var languagesToRender = ["en"];
@@ -2046,9 +2442,9 @@ var scratchblocks = function () {
       languages: languagesToRender,
 
       read: readCode, // function(el, options) => code
-      parse: parse,   // function(code, options) => scripts
-      render: render, // function(scripts, cb) => svg
-      replace: replace, // function(el, svg, scripts, options)
+      parse: parse,   // function(code, options) => doc
+      render: render, // function(doc, cb) => svg
+      replace: replace, // function(el, svg, doc, options)
     }, options);
 
     // find elements
@@ -2056,10 +2452,10 @@ var scratchblocks = function () {
     results.forEach(function(el) {
       var code = options.read(el, options);
 
-      var scripts = options.parse(code, options);
+      var doc = options.parse(code, options);
 
-      options.render(scripts, function(svg) {
-        options.replace(el, svg, scripts, options);
+      options.render(doc, function(svg) {
+        options.replace(el, svg, doc, options);
       });
     });
   };
@@ -2070,12 +2466,17 @@ var scratchblocks = function () {
     allLanguages: allLanguages, // read-only
     loadLanguages: loadLanguages,
 
+    fromJSON: Document.fromJSON,
+    toJSON: function(doc) { return doc.toJSON(); },
+    stringify: function(doc) { return doc.stringify(); },
+
     Label: Label,
     Icon: Icon,
     Input: Input,
     Block: Block,
     Comment: Comment,
     Script: Script,
+    Document: Document,
 
     read: readCode,
     parse: parse,
@@ -2083,7 +2484,6 @@ var scratchblocks = function () {
     replace: replace,
 	renderLanguages: renderLanguages,
     renderMatching: renderMatching,
-    exportSVG: exportSVG,
   };
 
 }();

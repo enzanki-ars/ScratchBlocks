@@ -3,10 +3,6 @@
 
 <title>dev : [scratchblocks]</title>
 
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-</head>
-
 <script>
 $(document).ready(function() {
   $("#tester-status").css({ color: 'red' });
@@ -116,7 +112,7 @@ a {
 
 <pre id="preview" class="blocks"></pre>
 
-<!--<script src="diacritics.js"></script>-->
+<script src="diacritics.js"></script>
 <script src="scratchblocks2.js"></script>
 <script src="translations.js"></script>
 
@@ -152,7 +148,7 @@ function refresh (e) {
   // add script
   preview.appendChild(document.createTextNode(script))
 
-  scratchblocks.parse("pre.blocks");
+  scratchblocks2.parse("pre.blocks");
 }
 
 function checkHash() {
@@ -174,9 +170,9 @@ code.oncopy = code.onpaste = function(e) {
 var choose_lang = document.getElementById("choose-lang");
 choose_lang.onchange = function (e) {
   var lang = choose_lang.value;
-  scratchblocks.reset_languages();
-  var lang_dict = scratchblocks._translations[lang];
-  if (lang_dict) scratchblocks.load_language(lang_dict)
+  scratchblocks2.reset_languages();
+  var lang_dict = scratchblocks2._translations[lang];
+  if (lang_dict) scratchblocks2.load_language(lang_dict)
   refresh();
 };
 choose_lang.value = "Choose extra language...";

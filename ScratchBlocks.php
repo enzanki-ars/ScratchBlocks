@@ -65,7 +65,7 @@ $wgResourceModules['ext.scratchBlocks'] = array(
         'run_scratchblocks.js',
     ),
 
-    //'styles' => 'ScratchBlocks/src/defs.css',
+    'styles' => '/inline.css',
 
     // jQuery is loaded anyway
     'dependencies' => array(),

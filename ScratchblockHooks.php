@@ -1,13 +1,13 @@
-class ScratchblockHooks {
-	punlic static  function sbSetup () {
+class ScratchblockHook {
+	punlic static function sbSetup() {
 		global $wgOut;
 		$wgOut->addModules('ext.scratchBlocks');
 	}
 	
 	public static function sbParserInit (Parser $parser) {
 		// Register <scratchblocks> and <sb> tag
-		$parser->setHook('scratchblocks', 'sbRenderTag');
-		$parser->setHook('sb', 'sbRenderInlineTag');
+		$parser->setHook('scratchblocks', 'ScratchblockHooks::sbRenderTag');
+		$parser->setHook('sb', 'ScratchblockHooks::sbRenderInlineTag');
 		return true;
 	}
 	 

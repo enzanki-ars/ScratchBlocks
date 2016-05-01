@@ -10,10 +10,10 @@
 	"license-name": "https://github.com/tjvr/wiki-scratchblocks/blob/master/LICENSE",
 	"type": "parserhook",
 	"AutoloadClasses": {
-		"ScratchblockHooks": "ScratchblockHooks.php"
+		"ScratchblockHook": "ScratchblockHooks.php"
 	},
 	"ExtensionFunctions": [
-		"ScratchblockHooks::sbSetup"
+		"ScratchblockHook::sbSetup"
 	],
 	"ResourceModules": {
 		"ext.scratchBlocks": {
@@ -32,7 +32,7 @@
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"ScratchblockHooks::sbParserInit"
+			"ScratchblockHook::sbParserInit"
 		]
 	},
 	"manifest_version": 1

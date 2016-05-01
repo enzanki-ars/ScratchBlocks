@@ -1,5 +1,6 @@
+<?php
 class ScratchblockHook {
-	punlic static function sbSetup() {
+	public static function sbSetup() {
 		global $wgOut;
 		$wgOut->addModules('ext.scratchBlocks');
 	}
@@ -25,3 +26,4 @@ class ScratchblockHook {
 		return '<code class="blocks">' . htmlspecialchars($input) . '</code>';
 	}
 }
+?>
